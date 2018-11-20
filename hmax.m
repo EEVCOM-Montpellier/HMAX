@@ -27,7 +27,7 @@ helpers.displayParameters(parameters);
 
 gaborParameters = hmax.classic.GaborParameters(parameters.GaborAspectRatio, parameters.GaborNbOrientations, parameters.GaborEffectiveWidth, parameters.GaborWavelength, parameters.GaborSizes);
 
-W=ones(3, parameters.ColorNbChannels / 2); W(2,1)=-1; W(3,1)=0; W(1,2)=2;
+W=ones(3, parameters.ColorNbChannels); W(2,1)=-1; W(3,1)=0; W(1,2)=2;
 W(2,2)=-1; W(3,2)=-1; W(3,3)=-2; W(:,1)=W(:,1)/sqrt(2);
 W(:,2)=W(:,2)/sqrt(6); W(:,3)=W(:,3)/sqrt(6); W(:,4)=W(:,4)/sqrt(3);
 

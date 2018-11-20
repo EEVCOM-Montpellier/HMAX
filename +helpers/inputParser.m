@@ -79,8 +79,8 @@ elseif results.GaborWavelength == "null"
 end
 if results.GaborSizes == "null" && isfield(p.Parameters, 'GaborSizes')
     results.GaborSizes = p.Parameters.GaborSizes;
-elseif results.FilterSizes == "null"
-    results.FilterSizes = [7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37];
+elseif results.GaborSizes == "null"
+    results.GaborSizes = [7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37];
 end
 if results.FiltersSizes == "null" && isfield(p.Parameters, 'FiltersSizes')
     results.FiltersSizes = p.Parameters.FiltersSizes;

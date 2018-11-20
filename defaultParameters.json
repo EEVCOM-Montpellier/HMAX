@@ -1,15 +1,15 @@
 {
     "Parameters": {
-        "Output": "res_color",
+        "Output": "results",
         "GPU": false,
         "Parallel": false,
         "Engine": "sparseCodingColor",
         "ImageSize": 140,
         "GaborNbOrientations": 4,
         "GaborAspectRatio": 0.3,
-        "GaborEffectiveWidth": [2.8, 3.6, 4.5, 5.4, 6.3, 7.3, 8.2, 10.2, 11.3, 13.3, 14.6, 15.8, 17.0, 18.2],
+        "GaborEffectiveWidth": [2.8, 3.6, 4.5, 5.4, 6.3, 7.3, 8.2, 9.2, 10.2, 11.3, 12.3, 13.4, 14.6, 15.8, 17.0, 18.2],
         "GaborWavelength": [3.5, 4.6, 5.6, 6.8, 7.9, 9.1, 10.3, 11.5, 12.7, 14.1, 15.4, 16.8, 18.2, 19.7, 21.2, 22.8],
-        "GaborSizes": [7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39],
+        "GaborSizes": [7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37],
         "FiltersSizes": [4, 8, 12, 16],
         "MaxPoolingSizes": [8, 8, 10, 10, 12, 12, 14, 14, 16, 16, 18, 18, 20, 20, 22, 22],
         "ColorNbChannels": 4,
@@ -19,7 +19,6 @@
         "SparseCodingNbIterations": 2,
         "SparseCodingPenalty": 0.4,
         "NbFilters": 1000,
-        "ColorNbChans": 4,
         "Train": false
     }
 }
