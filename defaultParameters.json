@@ -2,8 +2,8 @@
     "Parameters": {
         "Output": "results",
         "GPU": false,
-        "Parallel": false,
-        "Engine": "sparseCodingColor",
+        "Parallel": true,
+        "Engine": "classic",
         "ImageSize": 140,
         "GaborNbOrientations": 4,
         "GaborAspectRatio": 0.3,
@@ -18,7 +18,7 @@
         "SparseCodingBatchSize": 1000,
         "SparseCodingNbIterations": 2,
         "SparseCodingPenalty": 0.4,
-        "NbFilters": 1000,
+        "NbFilters": 4080,
         "Train": false
     }
 }
