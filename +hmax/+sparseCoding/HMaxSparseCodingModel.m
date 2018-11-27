@@ -28,14 +28,56 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
 
         function hlFilters = train(obj, images, sparseParameters, useGPU, useParallel)
             %TRAIN Train the HMax model to get HLFilters
-            for ii = 1:length(images)
-                if size(images{ii},3) == 3
-                    images{ii} = im2double(rgb2gray(images{ii}));% Convert it to grayscale
-                else
-                    images{ii} = im2double(images{ii});
+            import hmax.classic.*
+            
+            %Sample images
+            nbImages = length(images);
+            if nbImages >= sparseParameters.nbFilters
+                imagesSample = datasample(images, sparseParameters.nbFilters + 1, 'Replace', false);
+            else
+                imagesSample = datasample(images, sparseParameters.nbFilters + 1, 'Replace', true);
+            end
+            nbImgSample = length(imagesSample);
+            c1s = cell(1, nbImgSample);
+
+            %Compute C1s cards
+            if exist('useParallel', 'var') && useParallel
+                parfor ii = 1:nbImgSample
+                    image = imagesSample{ii};
+                    if size(image,3) == 3
+                      image = im2double(rgb2gray(image));% Convert it to grayscale
+                    else
+                      image = im2double(image);
+                    end
+                    if ~useGPU
+                        S1 = getS1(image, obj.GaborFilters());
+                        c1s{ii} = getC1(S1, obj.poolSizes, false);
+                    else
+                        image = gpuArray(image);
+                        S1 = getS1(image, obj.GaborFilters());
+                        c1s{ii} = getC1(S1, obj.poolSizes, useGPU);
+                    end
+                end
+            else
+                for ii = 1:nbImgSample
+                    image = imagesSample{ii};
+                    if size(image,3) == 3
+                      image = im2double(rgb2gray(image));% Convert it to grayscale
+                    else
+                      image = im2double(image);
+                    end
+                    if ~exist('useGPU', 'var') || ~useGPU
+                        S1 = getS1(image, obj.GaborFilters());
+                        c1s{ii} = getC1(S1, obj.poolSizes, false);
+                    else
+                        image = gpuArray(image);
+                        S1 = getS1(image, obj.GaborFilters());
+                        c1s{ii} = getC1(S1, obj.poolSizes, useGPU);
+                    end
                 end
             end
-            obj.hlFilters = hmax.sparseCoding.getHLFiltersSparse(images, sparseParameters, obj.GaborFilters(), obj.poolSizes);
+
+            obj.hlFilters = hmax.sparseCoding.getHLFiltersSparse(c1s, sparseParameters);
             hlFilters = obj.hlFilters;
             obj.sparseParameters = sparseParameters;
             save('data/sparseCoding_hlFilters.mat', 'hlFilters');

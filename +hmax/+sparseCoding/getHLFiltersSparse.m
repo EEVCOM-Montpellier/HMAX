@@ -1,17 +1,14 @@
-function [HLfilters] = getHLFiltersSparse(images, parameters, gaborFilters, poolSizes)
+function [HLfilters] = getHLFiltersSparse(C1s, parameters)
 
     import hmax.classic.*
     
-	nimg = size(images,2);
-    C1 = cell(1, nimg);
+	nimg = size(C1s,2);
+    C1_bis = cell(1, nimg);
     
     for imgcpt=1:nimg
-		img = images{imgcpt};
-
-		S1 = getS1(img, gaborFilters);
-		C1tmp = getC1(S1, poolSizes);
-    
-        c1tow = max(C1tmp{1}, [], 3);
+		c1 = C1s{imgcpt};
+  
+        c1tow = max(c1{1}, [], 3);
         [N, M] = size(c1tow);
         [fx, fy]=meshgrid(-M/2:M/2-1,-N/2:N/2-1);
         rho=sqrt(fx.*fx+fy.*fy);
@@ -22,17 +19,17 @@ function [HLfilters] = getHLFiltersSparse(images, parameters, gaborFilters, pool
         If=fft2(c1tow);
         imagew(:,:)=real(ifft2(If.*fftshift(filt)));
 
-        C1{imgcpt}(:,:) = imagew;
+        C1_bis{imgcpt}(:,:) = imagew;
     end
 
     variances = zeros(1, nimg);
     for j = 1:nimg
-        tmp = C1{imgcpt}(:, :);
+        tmp = C1_bis{imgcpt}(:, :);
         variances(j) = var(tmp(:));
     end
     for j = 1:nimg
-        tmp = C1{imgcpt}(:, :);
-        C1{imgcpt}(:, :) = sqrt(0.1)*tmp/sqrt(mean(variances(:)));
+        tmp = C1_bis{imgcpt}(:, :);
+        C1_bis{imgcpt}(:, :) = sqrt(0.1)*tmp/sqrt(mean(variances(:)));
     end
 
     %%%%% Apply Sparse Coding algorithm %%%%%
@@ -46,7 +43,7 @@ function [HLfilters] = getHLFiltersSparse(images, parameters, gaborFilters, pool
         foonpatchint = size(X,2)-1;
         foonpatchim =  floor(parameters.nbPatches/nimg);
         if (scalnimg==nimg), foonpatchim = parameters.nbPatches-foonpatchint; end
-        toconvert = C1{scalnimg}(:,:);
+        toconvert = C1_bis{scalnimg}(:,:);
         Y = hmax.sparseCoding.toImageArray(toconvert, parameters.winsize, foonpatchim);
         X = [X Y];
     end

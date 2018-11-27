@@ -1,6 +1,6 @@
 {
     "Parameters": {
-        "Output": "res_sparse",
+        "Output": "res_foobar",
         "GPU": false,
         "Parallel": true,
         "Engine": "sparseCoding",
@@ -22,6 +22,6 @@
             "Beta": 0.2,
             "NbFilters": 144
         },
-        "Train": false
+        "Train": true
     }
 }

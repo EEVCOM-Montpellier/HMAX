@@ -26,14 +26,89 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
             end
         end
         
-        function hlFilters = train(obj, images, sparseParameters)
+        function hlFilters = train(obj, images, sparseParameters, useGPU, useParallel)
             %TRAIN Train the HMax model to get HLFilters
+            import hmax.color.*
             
-            for ii = 1:length(images)
-                images{ii} = im2double(images{ii});
+            %Sample images
+            nbImages = length(images);
+            if nbImages >= sparseParameters.nbFilters
+                imagesSample = datasample(images, sparseParameters.nbFilters + 1, 'Replace', false);
+            else
+                imagesSample = datasample(images, sparseParameters.nbFilters + 1, 'Replace', true);
+            end
+            nbImgSample = length(imagesSample);
+
+            %Compute C1s cards
+            if exist('useParallel', 'var') && useParallel
+                c1s_tmp = cell(nbImgSample, 1);
+                parfor ii = 1:nbImgSample; c1s_tmp{ii} = cell(obj.NbChannels/2, 1);end
+                parfor ii = 1:nbImgSample
+                    image = imagesSample{ii};
+                    image = im2double(image);% Convert it to grayscale
+                    if ~useGPU
+                        SO = getSODescriptor(image, obj.W, obj.NbChannels, obj.GaborFilters());
+                        DO = getDODescriptor(SO, obj.GaborFilters());
+                        [nbChans, nbScales] = size(DO);
+                        for chan = 1:nbChans
+                            tmp = cell(1, nbScales);
+                            for i = 1:nbScales; tmp{i} = DO{chan, i};end
+                            c1s_tmp{ii}{chan} = hmax.classic.getC1(tmp, obj.poolSizes, false);
+                        end
+                    else
+                        image = gpuArray(image);
+                        SO = getSODescriptor(image, obj.W, obj.NbChannels, obj.GaborFilters());
+                        DO = getDODescriptor(SO, obj.GaborFilters());
+                        [nbChans, nbScales] = size(DO);
+                        for chan = 1:nbChans
+                            tmp = cell(1, nbScales);
+                            for i = 1:nbScales; tmp{i} = DO{chan, i};end
+                            c1s_tmp{ii}{chan} = hmax.classic.getC1(tmp, obj.poolSizes, false);
+                        end
+                    end
+                end
+                c1s = cell(obj.NbChannels/2, nbImgSample);
+                for ii = 1:nbImgSample
+                    for jj = 1:obj.NbChannels/2
+                        c1s{jj, ii} = c1s_tmp{ii}{jj};
+                    end
+                end
+            else
+                c1s = cell(obj.NbChannels/2, nbImgSample);
+                for ii = 1:nbImgSample
+                    image = imagesSample{ii};
+                    image = im2double(image);% Convert it to grayscale
+                    if ~useGPU
+                        SO = getSODescriptor(image, obj.W, obj.NbChannels, obj.GaborFilters());
+                        DO = getDODescriptor(SO, obj.GaborFilters());
+                        [nbChans, nbScales] = size(DO);
+                        for chan = 1:nbChans
+                            tmp = cell(1, nbScales);
+                            for i = 1:nbScales; tmp{i} = DO{chan, i};end
+                            c1s{chan,ii} = hmax.classic.getC1(tmp, obj.poolSizes, false);
+                        end
+                    else
+                        image = gpuArray(image);
+                        SO = getSODescriptor(image, obj.W, obj.NbChannels, obj.GaborFilters());
+                        DO = getDODescriptor(SO, obj.GaborFilters());
+                        [nbChans, nbScales] = size(DO);
+                        for chan = 1:nbChans
+                            tmp = cell(1, nbScales);
+                            for i = 1:nbScales; tmp{i} = DO{chan, i};end
+                            c1s{chan,ii} = hmax.classic.getC1(tmp, obj.poolSizes, false);
+                        end
+                    end
+                end
             end
             
-            obj.hlFilters = hmax.sparseCodingColor.getHLfiltersSparseColor(images, sparseParameters, obj.W, obj.outChansHalf , obj.GaborFilters(), obj.poolSizes);
+            %Compute HL Filters
+            obj.hlFilters = cell(1, obj.NbChannels/2);
+            for chan = 1:obj.NbChannels/2
+                C1 = cell(1, nbImgSample);
+                for jj = 1:nbImgSample; C1{jj} = c1s{chan, jj}; end
+                obj.hlFilters{chan} = hmax.sparseCoding.getHLFiltersSparse(C1, sparseParameters);
+            end
+
             hlFilters = obj.hlFilters;
             obj.sparseParameters = sparseParameters;
             save('data/sparseCodingColor_hlFilters.mat', 'hlFilters');
@@ -49,7 +124,7 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
 
             hlFilters = obj.HLFilters();
             if ~exist('useGPU', 'var') || ~useGPU
-                SO = getSODescriptor(image, obj.W, obj.outChansHalf, obj.GaborFilters());
+                SO = getSODescriptor(image, obj.W, obj.NbChannels, obj.GaborFilters());
                 DO = getDODescriptor(SO, obj.GaborFilters());
                 [nbChans, nbScales] = size(DO);
                 C1 = cell(1, nbChans); S2 = cell(1, nbChans); C2 = cell(1, nbChans);
