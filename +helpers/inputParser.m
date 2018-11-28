@@ -19,7 +19,7 @@ addParameter (parser, 'GaborSizes', 'null', @isnumeric);
 addParameter (parser, 'FiltersSizes', 'null', @isnumeric);
 addParameter (parser, 'MaxPoolingSizes', 'null', @isnumeric);
 addParameter (parser, 'ColorNbChannels', 'null', @integer);
-addParameter (parser, 'SparseCodingWinsize', 'null', @isinteger);
+addParameter (parser, 'SparseCodingFilterSize', 'null', @isinteger);
 addParameter (parser, 'SparseCodingNbPatches', 'null', @isinteger);
 addParameter (parser, 'SparseCodingBatchSize', 'null', @isinteger);
 addParameter (parser, 'SparseCodingNbIterations', 'null', @isinteger);
@@ -50,7 +50,7 @@ end
 if results.Engine == "null" && isfield(p.Parameters, 'Engine')
     results.Engine = p.Parameters.Engine;
 elseif results.Engine == "null"
-    results.Engine = 'sparseCodingColor';
+    results.Engine = 'classic';
 end
 if results.ImageSize == "null" && isfield(p.Parameters, 'ImageSize')
     results.ImageSize = p.Parameters.ImageSize;
@@ -70,7 +70,7 @@ end
 if results.GaborEffectiveWidth == "null" && isfield(p.Parameters, 'GaborEffectiveWidth')
     results.GaborEffectiveWidth = p.Parameters.GaborEffectiveWidth;
 elseif results.GaborEffectiveWidth == "null"
-    results.GaborEffectiveWidth = [2.8, 3.6, 4.5, 5.4, 6.3, 7.3, 8.2, 10.2, 11.3, 13.3, 14.6, 15.8, 17.0, 18.2];
+    results.GaborEffectiveWidth = [2.8, 3.6, 4.5, 5.4, 6.3, 7.3, 8.2, 9.2, 10.2, 11.3, 12.3, 13.4, 14.6, 15.8, 17.0, 18.2];
 end
 if results.GaborWavelength == "null" && isfield(p.Parameters, 'GaborWavelength')
     results.GaborWavelength = p.Parameters.GaborWavelength;
@@ -85,7 +85,7 @@ end
 if results.FiltersSizes == "null" && isfield(p.Parameters, 'FiltersSizes')
     results.FiltersSizes = p.Parameters.FiltersSizes;
 elseif results.FiltersSizes == "null"
-    results.FiltersSizes = [7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37];
+    results.FiltersSizes = [4, 8, 12, 16];
 end
 if results.MaxPoolingSizes == "null" && isfield(p.Parameters, 'MaxPoolingSizes')
     results.MaxPoolingSizes = p.Parameters.MaxPoolingSizes;
@@ -97,10 +97,10 @@ if results.ColorNbChannels == "null" && isfield(p.Parameters, 'ColorNbChannels')
 elseif results.ColorNbChannels == "null"
     results.ColorNbChannels = 4;
 end
-if results.SparseCodingWinsize == "null" && isfield(p.Parameters, 'SparseCodingWinsize')
-    results.SparseCodingWinsize = p.Parameters.SparseCodingWinsize;
-elseif results.SparseCodingWinsize == "null"
-    results.SparseCodingWinsize = 12;
+if results.SparseCodingFilterSize == "null" && isfield(p.Parameters, 'SparseCodingFilterSize')
+    results.SparseCodingFilterSize = p.Parameters.SparseCodingFilterSize;
+elseif results.SparseCodingFilterSize == "null"
+    results.SparseCodingFilterSize = 12;
 end
 if results.SparseCodingNbPatches == "null" && isfield(p.Parameters, 'SparseCodingNbPatches')
     results.SparseCodingNbPatches = p.Parameters.SparseCodingNbPatches;

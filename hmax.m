@@ -42,29 +42,31 @@ switch parameters.Engine
         hmaxModel = hmax.color.HMaxColorModel(gaborParameters, parameters.MaxPoolingSizes, W, parameters.ColorNbChannels);
     case 'sparseCoding'
         disp('Sparse coding')
-        hlParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingWinsize, ...
+        hlParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingFilterSize, ...
             parameters.SparseCodingNbPatches, parameters.SparseCodingBatchSize, parameters.SparseCodingNbIterations, ...
             parameters.SparseCodingPenalty, parameters.NbFilters);
         hmaxModel = hmax.sparseCoding.HMaxSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, hlParameters);
     case 'classicSparseCoding'
-        disp('classicSparseCoding')
+        disp('Classic sparse coding')
+        sparseParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingFilterSize, ...
+            parameters.SparseCodingNbPatches, parameters.SparseCodingBatchSize, parameters.SparseCodingNbIterations, ...
+            parameters.SparseCodingPenalty, parameters.NbFilters);
         hlParameters = hmax.classic.HLParameters(parameters.NbFilters, parameters.FiltersSizes);
-        hmaxModel = hmax.classicSparseCoding.HMaxClassicSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, hlParameters);
+        hmaxModel = hmax.classicSparseCoding.HMaxClassicSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, sparseParameters);
     otherwise
         disp('Sparse coding color')
-        hlParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingWinsize, ...
+        hlParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingFilterSize, ...
             parameters.SparseCodingNbPatches, parameters.SparseCodingBatchSize, parameters.SparseCodingNbIterations, ...
             parameters.SparseCodingPenalty, parameters.NbFilters);
         hmaxModel = hmax.sparseCodingColor.HMaxSparseCodingColorModel(gaborParameters, parameters.MaxPoolingSizes, W, parameters.ColorNbChannels, hlParameters);
 end
 
 if parameters.PathType == "directory"
-    [images, paths] = helpers.readImages(parameters.Path, parameters.Output);
-    for i = 1:length(images)
-        images{i} = helpers.resizeImage(images{i}, parameters.ImageSize);
-    end
-
     if parameters.Train
+        [images, ~] = helpers.readImages(parameters.Path);
+        for i = 1:length(images)
+            images{i} = helpers.resizeImage(images{i}, parameters.ImageSize);
+        end
         tic
         hmaxModel.train(images, hlParameters, parameters.GPU, parameters.Parallel);
         et = toc;
@@ -73,6 +75,10 @@ if parameters.PathType == "directory"
         fprintf(fid, '%s', et);
         fclose(fid);
     else
+        [images, paths] = helpers.readImages(parameters.Path, parameters.Output);
+        for i = 1:length(images)
+            images{i} = helpers.resizeImage(images{i}, parameters.ImageSize);
+        end
         tic
         hmaxModel.encodeMultiples(images, parameters.GPU, parameters.Parallel, paths);
         et = toc;

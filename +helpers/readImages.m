@@ -7,21 +7,29 @@ function [images, paths] = readImages(readdir, writedir)
     curdirs = curdirs(~ismember({curdirs.name},{'.','..'}));
     for ii = 1:length(curdirs)
         if curdirs(ii).isdir
-            [tmpimages, tmppaths] = helpers.readImages(fullfile(readdir, curdirs(ii).name), fullfile(writedir, curdirs(ii).name));
-            images = [images, tmpimages];
-            paths = [paths, tmppaths];
+            if exist('writedir', 'var')
+                [tmpimages, tmppaths] = helpers.readImages(fullfile(readdir, curdirs(ii).name), fullfile(writedir, curdirs(ii).name));
+                images = [images, tmpimages];
+                paths = [paths, tmppaths];
+            else
+                [tmpimages, tmppaths] = helpers.readImages(fullfile(readdir, curdirs(ii).name));
+                images = [images, tmpimages];
+                paths = [paths, tmppaths];
+            end
         else
             fullpath = fullfile(curdirs(ii).folder, curdirs(ii).name);
             try
                 image = imread(fullpath);
-                if ~exist(writedir, 'dir')
-                    mkdir(writedir);
+                if exist('writedir', 'var')
+                    if ~exist(writedir, 'dir')
+                        mkdir(writedir);
+                    end
+                    tmppath = fullfile(writedir, curdirs(ii).name);
+                    [filepath, name, ~] = fileparts(tmppath);
+                    savepath = [fullfile(filepath, name), '.mat'];
+                    paths = [paths, savepath];
                 end
-                tmppath = fullfile(writedir, curdirs(ii).name);
-                [filepath, name, ~] = fileparts(tmppath);
-                savepath = [fullfile(filepath, name), '.mat'];
                 images = [images, image];
-                paths = [paths, savepath];
             catch
             end
         end

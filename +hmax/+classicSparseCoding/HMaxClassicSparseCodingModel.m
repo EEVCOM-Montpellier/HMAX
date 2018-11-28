@@ -14,6 +14,18 @@ classdef HMaxClassicSparseCodingModel < hmax.classic.HMaxModel
             obj.sparseParameters = sparseParameters;
         end
         
+        function hlFilters = HLFilters(obj)
+            if ~exist('obj.hlFilters', 'var')
+                if ~exist('data/classic_hlFilters.mat', 'file')
+                    throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
+                else
+                    data = load('data/classic_hlFilters.mat');
+                    obj.hlFilters = data.hlFilters;
+                    hlFilters = obj.hlFilters;
+                end
+            end
+        end
+        
         function encode(obj, image, useGPU, savefile)
             %ENCODE Encode the image with the 'classic' HMax algorithm
             import hmax.sparseCoding.*
