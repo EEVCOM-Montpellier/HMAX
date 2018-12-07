@@ -1,8 +1,8 @@
 {
     "Parameters": {
-        "Output": "res_foo",
+        "Output": "res_sparse1000filters_bis",
         "GPU": false,
-        "Parallel": false,
+        "Parallel": true,
         "Engine": "sparseCoding",
         "ImageSize": 240,
         "GaborNbOrientations": 4,
@@ -16,9 +16,9 @@
         "SparseCodingFilterSize": 12,
         "SparseCodingNbPatches": 10000,
         "SparseCodingBatchSize": 1000,
-        "SparseCodingNbIterations": 2,
+        "SparseCodingNbIterations": 3,
         "SparseCodingPenalty": 0.4,
-        "NbFilters": 100,
-        "Train": true
+        "NbFilters": 1000,
+        "Train": false
     }
 }

@@ -71,6 +71,9 @@ if parameters.PathType == "directory"
         hmaxModel.train(images, hlParameters, parameters.GPU, parameters.Parallel);
         et = toc;
         disp(et);
+        if ~exist(parameters.Output, "dir")
+            mkdir(parameters.Output);
+        end
         fid=fopen(fullfile(parameters.Output, 'training_time.txt'),'w');
         fprintf(fid, '%s', et);
         fclose(fid);

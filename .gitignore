@@ -4,6 +4,10 @@
 # Data from execution
 res_*/
 *.mat
+!data/*.mat
+
+# Ignore the parameters file you working on
+run.json
 
 # Windows default autosave extension
 *.asv

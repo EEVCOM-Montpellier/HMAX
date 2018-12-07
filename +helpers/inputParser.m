@@ -6,7 +6,7 @@ isfolderorfile = @(x) logical(exist(x, 'file'));
 parser = inputParser;
 addRequired  (parser, 'Path', isfolderorfile);
 addParameter (parser, 'PathType', @(x) any(validatestring(x, {'directory', 'file'})));
-addParameter (parser, 'ConfigurationFile', 'defaultParameters.json', @isfile);
+addParameter (parser, 'ConfigurationFile', 'parameters.json', @isfile);
 addParameter (parser, 'GPU', 'null', @islogical);
 addParameter (parser, 'Parallel', 'null', @islogical);
 addParameter (parser, 'Engine', 'null', @(x) any(validatestring(x, {'classic', 'color', 'sparseCoding', 'classicSparseCoding', 'sparseCodingColor'})));
@@ -55,7 +55,7 @@ end
 if results.ImageSize == "null" && isfield(p.Parameters, 'ImageSize')
     results.ImageSize = p.Parameters.ImageSize;
 elseif results.ImageSize == "null"
-    results.ImageSize = 600;
+    results.ImageSize = 240;
 end
 if results.GaborNbOrientations == "null" && isfield(p.Parameters, 'GaborNbOrientations')
     results.GaborNbOrientations = p.Parameters.GaborNbOrientations;

@@ -1,6 +1,6 @@
 function display_figures(pars, stat, A, S, t)
 ws = sqrt(size(A,1));
-figure(1), display_network_nonsquare2(A); % display_network(A,[],1); 
+figure(10+t), display_network_nonsquare2(A); % display_network(A,[],1); 
 title(sprintf('%d iteration (%g min)', t, sum(stat.elapsed_time)/60));
 
 figure(3); plot([1:t], stat.fobj_avg, [1:t], stat.fresidue_avg, [1:t], stat.fsparsity_avg); 
