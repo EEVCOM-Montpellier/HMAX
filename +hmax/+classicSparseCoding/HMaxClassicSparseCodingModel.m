@@ -20,7 +20,13 @@ classdef HMaxClassicSparseCodingModel < hmax.classic.HMaxModel
                     throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
                 else
                     data = load('data/classic_hlFilters.mat');
-                    obj.hlFilters = data.hlFilters;
+                    obj.hlFilters = zeros(length(data.hlFilters{1}(:, 1, 1))*length(data.hlFilters{1}(1, :, 1)), length(data.hlFilters));
+                    for ii = 1:length(data.hlFilters)
+                        tmp = sum(data.hlFilters{ii}, 3);
+                        tmp = tmp - mean(tmp);
+                        tmp = tmp ./ std(tmp);
+                        obj.hlFilters(:, ii) = tmp(:);
+                    end
                     hlFilters = obj.hlFilters;
                 end
             end
