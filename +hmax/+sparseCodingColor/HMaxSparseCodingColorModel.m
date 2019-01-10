@@ -147,7 +147,7 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
                 end
             end
             if exist('savefile', 'var')
-                save(savefile, 'C2');
+                save(savefile, ['C2', 'SO', 'DO', 'C1', 'S2']);
             end
         end
         

@@ -125,7 +125,6 @@ classdef HMaxColorModel < hmax.classic.HMaxModel
             if ~exist('useGPU', 'var') || ~useGPU
                 SO = getSODescriptor(image, obj.W, obj.NbChannels, obj.GaborFilters());
                 DO = getDODescriptor(SO, obj.GaborFilters());
-                clear('SO');
                 [nbChans, nbScales] = size(DO);
                 C2 = cell(1, nbChans);
                 for chan = 1:nbChans
@@ -147,7 +146,7 @@ classdef HMaxColorModel < hmax.classic.HMaxModel
                 end
             end
             if exist('savefile', 'var')
-                save(savefile, 'C2');
+                save(savefile, ["C2", "SO", "DO", "C1", "S2"]);
             end
         end
 

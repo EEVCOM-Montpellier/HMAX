@@ -46,23 +46,32 @@ classdef HMaxClassicSparseCodingModel < hmax.classic.HMaxModel
             if ~exist('useGPU', 'var') || ~useGPU
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, false);
+                if exist('savefile', 'var')
+                    save(savefile, ["S1", "C1"], '-append');
+                end
                 clear('S1');
                 S2 = getS2Sparse(C1, obj.HLFilters(), obj.sparseParameters.winsize, obj.sparseParameters.beta, false);
                 clear('C1');
                 C2 = getC2Sparse(S2);
+                if exist('savefile', 'var')
+                    save(savefile, ["S2", "C2"], '-append');
+                end
                 clear('S2');
             else
                 image = gpuArray(image);
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, useGPU);
+                if exist('savefile', 'var')
+                    save(savefile, ["S1", "C1"], '-append');
+                end
                 clear('S1');
                 S2 = getS2Sparse(C1, obj.HLFilters(), obj.sparseParameters.winsize, obj.sparseParameters.beta, useGPU);
                 clear('C1');
                 C2 = getC2Sparse(S2);
+                if exist('savefile', 'var')
+                    save(savefile, ["S2", "C2"], '-append');
+                end
                 clear('S2');
-            end
-            if exist('savefile', 'var')
-                save(savefile, 'C2');
             end
         end
     end
