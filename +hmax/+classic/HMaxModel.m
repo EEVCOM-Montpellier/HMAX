@@ -111,7 +111,7 @@ classdef HMaxModel < handle
             save('data/classic_hlFilters.mat', 'hlFilters');
         end
 
-        function encode(obj, image, useGPU, savefile)
+        function encode(obj, image, useGPU, savefile, save)
             %ENCODE Encode the image with the 'classic' HMax algorithm
             import hmax.classic.*
             
@@ -124,30 +124,34 @@ classdef HMaxModel < handle
             if ~exist('useGPU', 'var') || ~useGPU
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, false);
-                if exist('savefile', 'var')
+                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
                     save(savefile, 'S1', 'C1');
                 end
                 clear('S1');
                 S2 = getS2(C1, obj.HLFilters(), false);
                 clear('C1');
                 C2 = getC2(S2, false);
-                if exist('savefile', 'var')
+                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
                     save(savefile, "S2", "C2", '-append');
+                elseif exist('savefile', 'var')
+                    save(savefile, "C2");
                 end
                 clear('S2');
             else
                 image = gpuArray(image);
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, useGPU);
-                if exist('savefile', 'var')
+                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
                     save(savefile, "S1", "C1");
                 end
                 clear('S1');
                 S2 = getS2(C1, obj.HLFilters(), useGPU);
                 clear('C1');
                 C2 = getC2(S2, useGPU);
-                if exist('savefile', 'var')
+                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
                     save(savefile, "S2", "C2", '-append');
+                elseif exist('savefile', 'var')
+                    save(savefile, "C2");
                 end
                 clear('S2');
             end
@@ -169,7 +173,7 @@ classdef HMaxModel < handle
             fprintf(string);
         end
 
-        function encodeMultiples(obj, images, useGPU, useParallel, savefiles)
+        function encodeMultiples(obj, images, useGPU, useParallel, savefiles, save)
             %ENCODEMULTIPLES Encode several images with the 'classic' HMax algorithm
             if exist('savefiles', 'var')
                 nbImages = min(length(images), length(savefiles));
@@ -183,7 +187,7 @@ classdef HMaxModel < handle
                     
                     try
                         parfor ii = 1:nbImages
-                            obj.encode(images{ii}, useGPU, savefiles{ii});
+                            obj.encode(images{ii}, useGPU, savefiles{ii}, save);
                         end
                     catch e
                         stop(t);
@@ -193,14 +197,14 @@ classdef HMaxModel < handle
                     clear('t');
                 else
                     for ii = 1:nbImages
-                        obj.encode(images{ii}, useGPU, savefiles{ii});
+                        obj.encode(images{ii}, useGPU, savefiles{ii}, save);
                     end
                 end
             else
                 nbImages = length(images);
                 if exist('useParallel', 'var') && useParallel
                     parfor ii = 1:nbImages
-                        obj.encode(images{ii}, useGPU, savefiles{ii});
+                        obj.encode(images{ii}, useGPU);
                     end
                 else
                     if ~exist('useGPU', 'var')

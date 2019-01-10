@@ -116,7 +116,7 @@ classdef HMaxColorModel < hmax.classic.HMaxModel
             end
         end
 
-        function encode(obj, image, useGPU, savefile)
+        function encode(obj, image, useGPU, savefile, save)
             %ENCODE Encode the image with the 'classic' HMax algorithm
             import hmax.classic.*
             import hmax.color.*
@@ -145,8 +145,10 @@ classdef HMaxColorModel < hmax.classic.HMaxModel
                     C2{chan} = getC2(S2, useGPU);
                 end
             end
-            if exist('savefile', 'var')
-                save(savefile, ["C2", "SO", "DO", "C1", "S2"]);
+            if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                save(savefile, "SO", "DO", "C1", "S2", "C2");
+            elseif exist('savefile', 'var')
+                save(savefile, "C2");
             end
         end
 

@@ -27,6 +27,7 @@ addParameter (parser, 'SparseCodingPenalty', 'null', @isfloat);
 addParameter (parser, 'NbFilters', 'null', @isinteger);
 addParameter (parser, 'Output', 'null', @isdir);
 addParameter (parser, 'Train', 'null', @islogical);
+addParameter (parser, 'Save', 'null', @(x) any(validatestring(x, {'all', 'C2'})));
 
 parse(parser, path, argin{:});
 
@@ -136,6 +137,11 @@ if ~islogical(results.Train) && results.Train == "null" && isfield(p.Parameters,
     results.Train = p.Parameters.Train;
 elseif ~islogical(results.Train) && results.Train == "null"
     results.Train = false;
+end
+if results.Save == "null" && isfield(p.Parameters, 'Save')
+    results.Save = p.Parameters.Save;
+elseif results.Save == "null"
+    results.Save = 'C2';
 end
 
 end

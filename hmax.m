@@ -83,7 +83,7 @@ if parameters.PathType == "directory"
             images{i} = helpers.resizeImage(images{i}, parameters.ImageSize);
         end
         tic
-        hmaxModel.encodeMultiples(images, parameters.GPU, parameters.Parallel, paths);
+        hmaxModel.encodeMultiples(images, parameters.GPU, parameters.Parallel, paths, parameters.Save);
         et = toc;
         disp(et);
         fid=fopen(fullfile(parameters.Output, 'exetution_time.txt'),'w');
@@ -97,7 +97,7 @@ else
        hmaxModel.train({image}, hlParameters); 
     else
         tic
-        hmaxModel.encode(image, parameters.GPU, name);
+        hmaxModel.encode(image, parameters.GPU, name, parameters.Save);
         toc
     end
 end
