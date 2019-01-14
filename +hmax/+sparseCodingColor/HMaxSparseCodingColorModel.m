@@ -114,7 +114,7 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
             save('data/sparseCodingColor_hlFilters.mat', 'hlFilters');
         end
         
-        function encode(obj, image, useGPU, savefile, save)
+        function encode(obj, image, useGPU, savefile, savetype)
             %ENCODE
             import hmax.classic.*
             import hmax.color.*
@@ -146,7 +146,7 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
                     C2{chan} = getC2(S2);
                 end
             end
-            if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+            if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                 save(savefile, "SO", "DO", "C1", "S2", "C2");
             elseif exist('savefile', 'var')
                 save(savefile, "C2");

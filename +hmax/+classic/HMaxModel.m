@@ -111,7 +111,7 @@ classdef HMaxModel < handle
             save('data/classic_hlFilters.mat', 'hlFilters');
         end
 
-        function encode(obj, image, useGPU, savefile, save)
+        function encode(obj, image, useGPU, savefile, savetype)
             %ENCODE Encode the image with the 'classic' HMax algorithm
             import hmax.classic.*
             
@@ -124,14 +124,14 @@ classdef HMaxModel < handle
             if ~exist('useGPU', 'var') || ~useGPU
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, false);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, 'S1', 'C1');
                 end
                 clear('S1');
                 S2 = getS2(C1, obj.HLFilters(), false);
                 clear('C1');
                 C2 = getC2(S2, false);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, "S2", "C2", '-append');
                 elseif exist('savefile', 'var')
                     save(savefile, "C2");
@@ -141,14 +141,14 @@ classdef HMaxModel < handle
                 image = gpuArray(image);
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, useGPU);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, "S1", "C1");
                 end
                 clear('S1');
                 S2 = getS2(C1, obj.HLFilters(), useGPU);
                 clear('C1');
                 C2 = getC2(S2, useGPU);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, "S2", "C2", '-append');
                 elseif exist('savefile', 'var')
                     save(savefile, "C2");

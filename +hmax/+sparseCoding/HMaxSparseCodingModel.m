@@ -43,7 +43,7 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             %Compute C1s cards
             if exist('useParallel', 'var') && useParallel
                 parfor ii = 1:nbImgSample
-                    image = imagesSample{ii};
+                    image = imcomplement(imagesSample{ii});
                     if size(image,3) == 3
                       image = im2double(rgb2gray(image));% Convert it to grayscale
                     else
@@ -60,7 +60,7 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
                 end
             else
                 for ii = 1:nbImgSample
-                    image = imagesSample{ii};
+                    image = imcomplement(imagesSample{ii});
                     if size(image,3) == 3
                       image = im2double(rgb2gray(image));% Convert it to grayscale
                     else
@@ -83,7 +83,7 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             save('data/sparseCoding_hlFilters.mat', 'hlFilters');
         end
         
-        function encode(obj, image, useGPU, savefile, save)
+        function encode(obj, image, useGPU, savefile, savetype)
             %ENCODE Encode the image with the 'classic' HMax algorithm
             %   Detailed explanation goes here            import hmax.classic.*
             import hmax.sparseCoding.*
@@ -98,14 +98,14 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             if ~exist('useGPU', 'var') || ~useGPU
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, false);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
-                    save(savefile, "S1", "C1");
+                if (exist('savefile', 'var') && exist('save', 'var') && savetype == "all")
+                    savetype(savefile, "S1", "C1");
                 end
                 clear('S1');
                 S2 = getS2Sparse(C1, obj.HLFilters(), obj.sparseParameters.winsize, obj.sparseParameters.beta, false);
                 clear('C1');
                 C2 = getC2Sparse(S2);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, "S2", "C2", '-append');
                 elseif exist('savefile', 'var')
                     save(savefile, "C2");
@@ -115,14 +115,14 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
                 image = gpuArray(image);
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, useGPU);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, "S1", "C1");
                 end
                 clear('S1');
                 S2 = getS2Sparse(C1, obj.HLFilters(), obj.sparseParameters.winsize, obj.sparseParameters.beta, useGPU);
                 clear('C1');
                 C2 = getC2Sparse(S2);
-                if (exist('savefile', 'var') && exist('save', 'var') && save == "all")
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
                     save(savefile, "S2", "C2", '-append');
                 elseif exist('savefile', 'var')
                     save(savefile, "C2");
