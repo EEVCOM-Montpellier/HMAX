@@ -28,6 +28,7 @@ addParameter (parser, 'NbFilters', 'null', @isinteger);
 addParameter (parser, 'Output', 'null', @isdir);
 addParameter (parser, 'Train', 'null', @islogical);
 addParameter (parser, 'Save', 'null', @(x) any(validatestring(x, {'all', 'C2'})));
+addParameter (parser, 'HlFiltersLocation', 'null', @isstring);
 
 parse(parser, path, argin{:});
 
@@ -142,6 +143,11 @@ if results.Save == "null" && isfield(p.Parameters, 'Save')
     results.Save = p.Parameters.Save;
 elseif results.Save == "null"
     results.Save = 'C2';
+end
+if results.HlFiltersLocation == "null" && isfield(p.Parameters, 'HlFiltersLocation')
+    results.HlFiltersLocation = p.Parameters.HlFiltersLocation;
+elseif results.HlFiltersLocation == "null"
+    results.HlFiltersLocation = 'data/hlfilters.mat';
 end
 
 end

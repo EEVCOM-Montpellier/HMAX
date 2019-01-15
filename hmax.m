@@ -35,30 +35,30 @@ switch parameters.Engine
     case 'classic'
         disp('Classic')
         hlParameters = hmax.classic.HLParameters(parameters.NbFilters, parameters.FiltersSizes);
-        hmaxModel = hmax.classic.HMaxModel(gaborParameters, parameters.MaxPoolingSizes);
+        hmaxModel = hmax.classic.HMaxModel(gaborParameters, parameters.MaxPoolingSizes, parameters.HlFiltersLocation);
     case 'color'
         disp('Color')
         hlParameters = hmax.classic.HLParameters(parameters.NbFilters, parameters.FiltersSizes);
-        hmaxModel = hmax.color.HMaxColorModel(gaborParameters, parameters.MaxPoolingSizes, W, parameters.ColorNbChannels);
+        hmaxModel = hmax.color.HMaxColorModel(gaborParameters, parameters.MaxPoolingSizes, W, parameters.ColorNbChannels, parameters.HlFiltersLocation);
     case 'sparseCoding'
         disp('Sparse coding')
         hlParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingFilterSize, ...
             parameters.SparseCodingNbPatches, parameters.SparseCodingBatchSize, parameters.SparseCodingNbIterations, ...
             parameters.SparseCodingPenalty, parameters.NbFilters);
-        hmaxModel = hmax.sparseCoding.HMaxSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, hlParameters);
+        hmaxModel = hmax.sparseCoding.HMaxSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, hlParameters, parameters.HlFiltersLocation);
     case 'classicSparseCoding'
         disp('Classic sparse coding')
         sparseParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingFilterSize, ...
             parameters.SparseCodingNbPatches, parameters.SparseCodingBatchSize, parameters.SparseCodingNbIterations, ...
             parameters.SparseCodingPenalty, parameters.NbFilters);
         hlParameters = hmax.classic.HLParameters(parameters.NbFilters, parameters.FiltersSizes);
-        hmaxModel = hmax.classicSparseCoding.HMaxClassicSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, sparseParameters);
+        hmaxModel = hmax.classicSparseCoding.HMaxClassicSparseCodingModel(gaborParameters, parameters.MaxPoolingSizes, sparseParameters, parameters.HlFiltersLocation);
     otherwise
         disp('Sparse coding color')
         hlParameters = hmax.sparseCoding.HLSparseCodingParameters(parameters.SparseCodingFilterSize, ...
             parameters.SparseCodingNbPatches, parameters.SparseCodingBatchSize, parameters.SparseCodingNbIterations, ...
             parameters.SparseCodingPenalty, parameters.NbFilters);
-        hmaxModel = hmax.sparseCodingColor.HMaxSparseCodingColorModel(gaborParameters, parameters.MaxPoolingSizes, W, parameters.ColorNbChannels, hlParameters);
+        hmaxModel = hmax.sparseCodingColor.HMaxSparseCodingColorModel(gaborParameters, parameters.MaxPoolingSizes, W, parameters.ColorNbChannels, hlParameters, parameters.HlFiltersLocation);
 end
 
 if parameters.PathType == "directory"

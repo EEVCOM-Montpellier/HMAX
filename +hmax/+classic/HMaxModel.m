@@ -5,6 +5,7 @@ classdef HMaxModel < handle
         gaborParameters
         poolSizes
         imageSize
+        hlFiltersLocation
     end
     
     properties (Access = protected)
@@ -15,10 +16,11 @@ classdef HMaxModel < handle
     end
 
     methods
-        function obj = HMaxModel(gaborParameters, poolSizes)
+        function obj = HMaxModel(gaborParameters, poolSizes, hlFiltersLocation)
             %HMAXMODEL Construct an instance of this class
             obj.gaborParameters = gaborParameters;
             obj.poolSizes = poolSizes;
+            obj.hlFiltersLocation = hlFiltersLocation;
         end
         
         function nbScales = NbScales(obj)
@@ -36,16 +38,15 @@ classdef HMaxModel < handle
             if ~exist('obj.gaborFilters', 'var')
                 obj.gaborFilters = getGaborFilters(obj.gaborParameters);
                 gaborFilters = obj.gaborFilters;
-                save('data/classic_gaborFilters.mat', 'gaborFilters');
             end
         end
 
         function hlFilters = HLFilters(obj)
             if ~exist('obj.hlFilters', 'var')
-                if ~exist('data/classic_hlFilters.mat', 'file')
+                if ~exist(obj.hlFiltersLocation, 'file')
                     throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
                 else
-                    data = load('data/classic_hlFilters.mat');
+                    data = load(obj.hlFiltersLocation);
                     obj.hlFilters = data.hlFilters;
                     hlFilters = obj.hlFilters;
                 end
@@ -108,7 +109,7 @@ classdef HMaxModel < handle
             %Compute HL Filters
             obj.hlFilters = getHLFilters(c1s, hlParameters);
             hlFilters = obj.hlFilters;
-            save('data/classic_hlFilters.mat', 'hlFilters');
+            save(obj.hlFiltersLocation, 'hlFilters');
         end
 
         function encode(obj, image, useGPU, savefile, savetype)
@@ -164,7 +165,7 @@ classdef HMaxModel < handle
                     counter = counter + 1;
                 end
             end
-            etr = ceil(3.3671893939393939393939393939394 * (nbImages - counter)/60);
+            etr = ceil(3.37 * (nbImages - counter)/60);
             for ii = 2:obj.len_string
                 fprintf('\b');
             end

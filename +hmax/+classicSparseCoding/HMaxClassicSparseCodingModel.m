@@ -7,19 +7,19 @@ classdef HMaxClassicSparseCodingModel < hmax.classic.HMaxModel
     end
     
     methods
-        function obj = HMaxClassicSparseCodingModel(gaborParameters, poolSizes, sparseParameters)
+        function obj = HMaxClassicSparseCodingModel(gaborParameters, poolSizes, sparseParameters, hlFiltersLocation)
             %HMAXSPARSECODINGMODEL Construct an instance of this class
             addpath(genpath('./fast_sc/code/'));
-            obj@ hmax.classic.HMaxModel(gaborParameters, poolSizes);
+            obj@ hmax.classic.HMaxModel(gaborParameters, poolSizes, hlFiltersLocation);
             obj.sparseParameters = sparseParameters;
         end
         
         function hlFilters = HLFilters(obj)
             if ~exist('obj.hlFilters', 'var')
-                if ~exist('data/classic_hlFilters.mat', 'file')
+                if ~exist(obj.hlFiltersLocation, 'file')
                     throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
                 else
-                    data = load('data/classic_hlFilters.mat');
+                    data = load(obj.hlFiltersLocation);
                     obj.hlFilters = zeros(length(data.hlFilters{1}(:, 1, 1))*length(data.hlFilters{1}(1, :, 1)), length(data.hlFilters));
                     for ii = 1:length(data.hlFilters)
                         tmp = sum(data.hlFilters{ii}, 3);

@@ -6,11 +6,8 @@ function T = loadC2sUnlabeled(directory)
     fileIndex = 1;
     curdirs = dir(directory);
     curdirs = curdirs(~ismember({curdirs.name},{'.','..'}));
-    curdirs = curdirs([curdirs.isdir]);
+    files = curdirs(~[curdirs.isdir]);
     len_str = 0;
-    files = dir(fullfile(curdirs(1).folder, curdirs(1).name));
-    files = files(~ismember({files.name}, {'.', '..'}));
-    files = files(~[files.isdir]);
     load(fullfile(files(1).folder, files(1).name), 'C2');
     try
         nbFeatures = length(C2{1});

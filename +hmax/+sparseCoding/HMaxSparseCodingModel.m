@@ -7,19 +7,19 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
     end
     
     methods
-        function obj = HMaxSparseCodingModel(gaborParameters, poolSizes, sparseParameters)
+        function obj = HMaxSparseCodingModel(gaborParameters, poolSizes, sparseParameters, hlFiltersLocation)
             %HMAXSPARSECODINGMODEL Construct an instance of this class
             addpath(genpath('./fast_sc/code/'));
-            obj@ hmax.classic.HMaxModel(gaborParameters, poolSizes);
+            obj@ hmax.classic.HMaxModel(gaborParameters, poolSizes, hlFiltersLocation);
             obj.sparseParameters = sparseParameters;
         end
 
         function hlFilters = HLFilters(obj)
             if ~exist('obj.hlFilters', 'var')
-                if ~exist('data/sparseCoding_hlFilters.mat', 'file')
+                if ~exist(obj.hlFiltersLocation, 'file')
                     throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
                 else
-                    data = load('data/sparseCoding_hlFilters.mat');
+                    data = load(obj.hlFiltersLocation);
                     obj.hlFilters = data.hlFilters;
                     hlFilters = obj.hlFilters;
                 end
@@ -60,7 +60,7 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
                 end
             else
                 for ii = 1:nbImgSample
-                    image = imcomplement(imagesSample{ii});
+                    image = imagesSample{ii};
                     if size(image,3) == 3
                       image = im2double(rgb2gray(image));% Convert it to grayscale
                     else
@@ -80,7 +80,7 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             obj.hlFilters = hmax.sparseCoding.getHLFiltersSparse(c1s, sparseParameters);
             hlFilters = obj.hlFilters;
             obj.sparseParameters = sparseParameters;
-            save('data/sparseCoding_hlFilters.mat', 'hlFilters');
+            save(obj.hlFiltersLocation, 'hlFilters');
         end
         
         function encode(obj, image, useGPU, savefile, savetype)
@@ -88,7 +88,8 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             %   Detailed explanation goes here            import hmax.classic.*
             import hmax.sparseCoding.*
             import hmax.classic.*
-
+            
+            image = imcomplement(image);
             if size(image,3) == 3
                 image = im2double(rgb2gray(image));% Convert it to grayscale
             else

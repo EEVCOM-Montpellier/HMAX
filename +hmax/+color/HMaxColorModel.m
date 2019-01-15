@@ -7,9 +7,9 @@ classdef HMaxColorModel < hmax.classic.HMaxModel
     end
 
     methods
-        function obj = HMaxColorModel(gaborParameters, poolSizes, W, NbChannels)
+        function obj = HMaxColorModel(gaborParameters, poolSizes, W, NbChannels, hlFiltersLocation)
             %HMAXCOLORMODEL Construct an instance of this class
-            obj@ hmax.classic.HMaxModel(gaborParameters, poolSizes);
+            obj@ hmax.classic.HMaxModel(gaborParameters, poolSizes, hlFiltersLocation);
             obj.W = W;
             obj.NbChannels = NbChannels;
         end
@@ -101,15 +101,15 @@ classdef HMaxColorModel < hmax.classic.HMaxModel
                 obj.hlFilters{chan} = hmax.classic.getHLFilters(C1, hlParameters);
             end
             hlFilters = obj.hlFilters;
-            save('data/color_hlFilters.mat', 'hlFilters');
+            save(obj.hlFiltersLocation, 'hlFilters');
         end
         
         function hlFilters = HLFilters(obj)
             if ~exist('obj.hlFilters', 'var')
-                if ~exist('data/color_hlFilters.mat', 'file')
+                if ~exist(obj.hlFiltersLocation, 'file')
                     throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
                 else
-                    data = load('data/color_hlFilters.mat');
+                    data = load(obj.hlFiltersLocation);
                     obj.hlFilters = data.hlFilters;
                     hlFilters = obj.hlFilters;
                 end

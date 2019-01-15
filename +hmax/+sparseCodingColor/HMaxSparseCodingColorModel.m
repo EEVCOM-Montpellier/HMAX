@@ -7,19 +7,19 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
     end
     
     methods
-        function obj = HMaxSparseCodingColorModel(gaborParameters, poolSizes, W, outChansHalf, sparseParameters)
+        function obj = HMaxSparseCodingColorModel(gaborParameters, poolSizes, W, outChansHalf, sparseParameters, hlFiltersLocation)
             %HMAXSPARSECODINGCOLORMODEL Construct an instance of this class
             addpath(genpath('./fast_sc/code/'));
-             obj@ hmax.color.HMaxColorModel(gaborParameters, poolSizes, W, outChansHalf);
-             obj.sparseParameters = sparseParameters;
+            obj@ hmax.color.HMaxColorModel(gaborParameters, poolSizes, W, outChansHalf, hlFiltersLocation);
+            obj.sparseParameters = sparseParameters;
         end
         
         function hlFilters = HLFilters(obj)
             if ~exist('obj.hlFilters', 'var')
-                if ~exist('data/sparseCodingColor_hlFilters.mat', 'file')
+                if ~exist(obj.hlFiltersLocation, 'file')
                     throw(MException('HMax:ModelNotTrained','You need to train the model before use it'));
                 else
-                    data = load('data/sparseCodingColor_hlFilters.mat');
+                    data = load(obj.hlFiltersLocation);
                     obj.hlFilters = data.hlFilters;
                     hlFilters = obj.hlFilters;
                 end
@@ -111,7 +111,7 @@ classdef HMaxSparseCodingColorModel < hmax.color.HMaxColorModel
 
             hlFilters = obj.hlFilters;
             obj.sparseParameters = sparseParameters;
-            save('data/sparseCodingColor_hlFilters.mat', 'hlFilters');
+            save(obj.hlFiltersLocation, 'hlFilters');
         end
         
         function encode(obj, image, useGPU, savefile, savetype)
