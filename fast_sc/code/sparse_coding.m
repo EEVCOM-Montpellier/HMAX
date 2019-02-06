@@ -141,7 +141,7 @@ while t < pars.num_trials
         if (mod(batch,20)==0) fprintf('\n'); end
         
         % This is data to use for this step
-        batch_idx = indperm((1:pars.batch_size)+pars.batch_size*(batch-1));
+        batch_idx = indperm(round((1:round(pars.batch_size))+pars.batch_size*(batch-1)));
         Xb = X(:,batch_idx);
         
         % learn coefficients (conjugate gradient)

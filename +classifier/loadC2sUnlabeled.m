@@ -5,7 +5,7 @@ function T = loadC2sUnlabeled(directory)
     filenames = cell(countFiles, 1);
     fileIndex = 1;
     curdirs = dir(directory);
-    curdirs = curdirs(~ismember({curdirs.name},{'.','..'}));
+    curdirs = curdirs(~ismember({curdirs.name},{'.','..', 'execution_time.txt', 'training_time.txt'}));
     files = curdirs(~[curdirs.isdir]);
     len_str = 0;
     load(fullfile(files(1).folder, files(1).name), 'C2');

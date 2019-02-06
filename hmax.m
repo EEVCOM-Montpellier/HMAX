@@ -86,7 +86,7 @@ if parameters.PathType == "directory"
         hmaxModel.encodeMultiples(images, parameters.GPU, parameters.Parallel, paths, parameters.Save);
         et = toc;
         disp(et);
-        fid=fopen(fullfile(parameters.Output, 'exetution_time.txt'),'w');
+        fid=fopen(fullfile(parameters.Output, 'execution_time.txt'),'w');
         fprintf(fid, '%s', et);
         fclose(fid);
     end

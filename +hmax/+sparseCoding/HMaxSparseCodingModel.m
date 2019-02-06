@@ -43,7 +43,8 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             %Compute C1s cards
             if exist('useParallel', 'var') && useParallel
                 parfor ii = 1:nbImgSample
-                    image = imcomplement(imagesSample{ii});
+                    %image = imcomplement(imagesSample{ii});
+                    image = imagesSample{ii};
                     if size(image,3) == 3
                       image = im2double(rgb2gray(image));% Convert it to grayscale
                     else
@@ -89,7 +90,7 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             import hmax.sparseCoding.*
             import hmax.classic.*
             
-            image = imcomplement(image);
+            % image = imcomplement(image);
             if size(image,3) == 3
                 image = im2double(rgb2gray(image));% Convert it to grayscale
             else
