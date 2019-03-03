@@ -1,14 +1,15 @@
-function T = loadC2sUnlabeled(directory)
+function T = loadC2sUnlabeledWithS2Sparseness(directory)
 %LOADC2S Summary of this function goes here
     allFiles = dir(fullfile(directory, '**/*.mat'));
     countFiles = size(allFiles, 1);
     filenames = cell(countFiles, 1);
+    S2sparseness = zeros(countFiles, 1);
     fileIndex = 1;
     curdirs = dir(directory);
     curdirs = curdirs(~ismember({curdirs.name},{'.','..', 'execution_time.txt', 'training_time.txt'}));
     files = curdirs(~[curdirs.isdir]);
     len_str = 0;
-    load(fullfile(files(1).folder, files(1).name));
+    load(fullfile(files(1).folder, files(1).name), 'C2');
     try
         nbFeatures = length(C2{1});
         nbFeatures = nbFeatures * length(C2);
@@ -27,7 +28,7 @@ function T = loadC2sUnlabeled(directory)
              stat_string = ['Folder ' int2str(ii) '/' int2str(length(curdirs)) ' - File ' int2str(jj) '/' int2str(length(files))];
              len_str = length(stat_string);
              fprintf(stat_string);
-             load(fullfile(files(jj).folder, files(jj).name), 'C2');
+             load(fullfile(files(jj).folder, files(jj).name), 'C2', 'sparsnessS2');
              filenames(fileIndex) = { files(jj).name };
              try
                  size(C2{1});
@@ -40,10 +41,11 @@ function T = loadC2sUnlabeled(directory)
              catch 
                 C2s(fileIndex,:) = C2;
              end
+             S2sparseness(fileIndex) = sparsnessS2;
              fileIndex = fileIndex + 1;
          end
     end
     fprintf('\n');
-    T = table(C2s, filenames);
+    T = table(C2s, S2sparseness, filenames);
 end
 

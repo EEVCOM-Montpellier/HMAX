@@ -4,7 +4,7 @@
         "GPU": false,
         "Parallel": true,
         "Engine": "classic",
-        "ImageSize": 140,
+        "ImageSize": 240,
         "GaborNbOrientations": 4,
         "GaborAspectRatio": 0.3,
         "GaborEffectiveWidth": [2.8, 3.6, 4.5, 5.4, 6.3, 7.3, 8.2, 9.2, 10.2, 11.3, 12.3, 13.4, 14.6, 15.8, 17.0, 18.2],
@@ -19,6 +19,8 @@
         "SparseCodingNbIterations": 3,
         "SparseCodingPenalty": 0.4,
         "NbFilters": 1000,
-        "Train": false
+        "Train": false,
+        "Save": "C2",
+        "HlFiltersLocation": "./data/classic_hlfilters.mat"
     }
 }

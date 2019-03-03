@@ -1,8 +1,8 @@
-function P1(P1)
+function fig = P1(P1)
 %P1 Display "phase 1" layers (C1 and S1 maps)
 
     [ ~, nbScales] = size(P1);
-    figure('Name', 'Phase 1');
+    fig = figure('Name', 'Phase 1');
     for scale= 1:nbScales
         subplot(ceil(sqrt(nbScales)), ceil(sqrt(nbScales)), scale);
         [w, h, nbOrientations ] = size(P1{scale});
@@ -22,9 +22,7 @@ function P1(P1)
             imaf = vertcat(imaf, buff);
         end
         imshow(imaf,[]);
-        
 
         title(sprintf('Scale = %d', scale));
     end
 end
-

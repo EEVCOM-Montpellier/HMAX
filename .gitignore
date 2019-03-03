@@ -6,6 +6,9 @@ res_*/
 *.mat
 !data/*.mat
 
+# Temp folder
+tmp/
+
 # Ignore the parameters file you working on
 run.json
 

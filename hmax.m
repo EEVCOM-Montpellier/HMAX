@@ -97,7 +97,7 @@ else
        hmaxModel.train({image}, hlParameters); 
     else
         tic
-        hmaxModel.encode(image, parameters.GPU, name, parameters.Save);
+        hmaxModel.encode(image, parameters.GPU, strcat(parameters.Output, strrep(name, ".jpg", ".mat")), parameters.Save);
         toc
     end
 end

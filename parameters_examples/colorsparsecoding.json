@@ -18,6 +18,8 @@
         "SparseCodingNbIterations": 3,
         "SparseCodingPenalty": 0.4,
         "NbFilters": 1000,
-        "Train": false
+        "Train": false,
+        "Save": "C2",
+        "HlFiltersLocation": "./data/colorsparsecoding_hlfilters.mat"
     }
 }

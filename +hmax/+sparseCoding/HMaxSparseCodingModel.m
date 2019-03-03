@@ -100,17 +100,23 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
             if ~exist('useGPU', 'var') || ~useGPU
                 S1 = getS1(image, obj.GaborFilters());
                 C1 = getC1(S1, obj.poolSizes, false);
-                if (exist('savefile', 'var') && exist('save', 'var') && savetype == "all")
-                    savetype(savefile, "S1", "C1");
+                if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
+                    save(savefile, "S1", "C1");
                 end
                 clear('S1');
                 S2 = getS2Sparse(C1, obj.HLFilters(), obj.sparseParameters.winsize, obj.sparseParameters.beta, false);
                 clear('C1');
                 C2 = getC2Sparse(S2);
+                coefsS2 = S2(S2~=0);
+                coefsS2 = sort(coefsS2, 'descend');
+                coefsS2 = coefsS2 + abs(min(coefsS2(:)));
+                coefsS2 = coefsS2 / max(coefsS2(:));
+                sparsenessS2 = numel(coefsS2) / numel(S2);
+                populationSparsenessS2 = (pow2(sum(S2) / numel(S2))) / (sum(pow2(S2)) / numel(S2));
                 if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
-                    save(savefile, "S2", "C2", '-append');
+                    save(savefile, "S2", "C2", "coefsS2", "sparsenessS2", "populationSparsenessS2", '-append');
                 elseif exist('savefile', 'var')
-                    save(savefile, "C2");
+                    save(savefile, "C2", "coefsS2", "sparsenessS2", "populationSparsenessS2");
                 end
                 clear('S2');
             else
@@ -124,15 +130,18 @@ classdef HMaxSparseCodingModel < hmax.classic.HMaxModel
                 S2 = getS2Sparse(C1, obj.HLFilters(), obj.sparseParameters.winsize, obj.sparseParameters.beta, useGPU);
                 clear('C1');
                 C2 = getC2Sparse(S2);
+                coefsS2 = S2(S2~=0);
+                coefsS2 = abs(coefsS2);
+                coefsS2 = sort(coefsS2, 'descend');
+                coefsS2 = coefsS2 / max(coefsS2(:));
+                sparsenessS2 = 1 - numel(coefsS2) / numel(S2);
+                populationSparsenessS2 = (pow2(sum(S2) / numel(S2))) / (sum(pow2(S2)) / numel(S2));
                 if (exist('savefile', 'var') && exist('savetype', 'var') && savetype == "all")
-                    save(savefile, "S2", "C2", '-append');
+                    save(savefile, "S2", "C2", "coefsS2", "sparsenessS2", "populationSparsenessS2", '-append');
                 elseif exist('savefile', 'var')
-                    save(savefile, "C2");
+                    save(savefile, "C2", "coefsS2", "sparsenessS2", "populationSparsenessS2");
                 end
                 clear('S2');
-            end
-            if exist('savefile', 'var')
-                save(savefile, 'C2');
             end
         end
     end
